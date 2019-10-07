@@ -1,1 +1,0 @@
-# corporate-invention-board-py
