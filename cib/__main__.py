@@ -34,12 +34,12 @@ def _main(args=None):
         port=elastic_port,
     )
 
-    df_names = pd.read_csv('data/load/companies_name.csv')
+    df_names = pd.read_csv('data/load/sample_companies_name.csv')
     data = []
 
     for index, row in df_names.iterrows():
-        print(row['magerman'])
-        match_result = match_by_fuzzy(row['magerman'], row['cnty_iso'])
+        print(row['companies'])
+        match_result = match_by_fuzzy(row['companies'], row['cnty_iso'])
         if not match_result:
             not_found = not_found + 1
         data = data + match_result
@@ -49,7 +49,7 @@ def _main(args=None):
     df_export = pd.DataFrame(match_result,
                              columns=['doc_std_name', 'doc_std_name_id',
                                       'orbis_name', 'score'])
-    df_export.to_csv('data/results/patstat_match.csv')
+    df_export.to_csv('data/results/sample_patstat_matching.csv')
     print("total companies not found ", not_found)
 
 
