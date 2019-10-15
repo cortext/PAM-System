@@ -1,3 +1,4 @@
+import pandas as pd
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 
@@ -7,10 +8,10 @@ def extract_stop_words():
     extract_stop_word
     """
     stop_words = set(stopwords.words('english'))
-    df_names = pd.read_csv('cib/data/guo_magerman.csv')
+    df_names = pd.read_csv('data/load/sample_companies_name.csv')
 
     for index, row in df_names.iterrows():
-        word_tokens = word_tokenize(row['magerman'].lower())
+        word_tokens = word_tokenize(row['companies'].lower())
         # filtered_sentence = [w for w in word_tokens if not w in stop_words]
         filtered_sentence = []
 
@@ -20,7 +21,7 @@ def extract_stop_words():
 
         if filtered_sentence and (
             len(word_tokens) > 3) and "&" not in word_tokens:
-            print(row['magerman'])
+            print(row['companies'])
             print(filtered_sentence)
 
 
