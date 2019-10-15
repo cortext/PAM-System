@@ -3,26 +3,24 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 
 
-def extract_stop_words():
+def extract_stop_words(string=""):
     """
     extract_stop_word
     """
     stop_words = set(stopwords.words('english'))
-    df_names = pd.read_csv('data/load/sample_companies_name.csv')
+    word_tokens = word_tokenize(string.lower())
 
-    for index, row in df_names.iterrows():
-        word_tokens = word_tokenize(row['companies'].lower())
-        # filtered_sentence = [w for w in word_tokens if not w in stop_words]
-        filtered_sentence = []
+    # filtered_sentence = [w for w in word_tokens if not w in stop_words]
+    filtered_sentence = []
 
-        for w in word_tokens:
-            if w in stop_words:
-                filtered_sentence.append(w)
+    for w in word_tokens:
+        if w in stop_words:
+            filtered_sentence.append(w)
 
-        if filtered_sentence and (
-            len(word_tokens) > 3) and "&" not in word_tokens:
-            print(row['companies'])
-            print(filtered_sentence)
+    if filtered_sentence and (
+        len(word_tokens) > 3) and "&" not in word_tokens:
+        print(string)
+        print(filtered_sentence)
 
 
 def magerman_normalization():

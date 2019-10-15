@@ -1,19 +1,18 @@
 import sys
+import click
 import configparser
 import pandas as pd
 import elasticsearch
-from cib import cleaner
-from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize
+from cib.cleaner import normalizations
 from elasticsearch import Elasticsearch
 
 config = configparser.ConfigParser()
 config.read('cib/config.ini')
 
-elastic_host = config['elasticsearch']['host']
-elastic_port = config['elasticsearch']['port']
-elastic_user = config['elasticsearch']['user']
-elastic_pass = config['elasticsearch']['password']
+ELASTIC_HOST = config['elasticsearch']['host']
+ELASTIC_PORT = config['elasticsearch']['port']
+ELASTIC_USER = config['elasticsearch']['user']
+ELASTIC_PASS = config['elasticsearch']['password']
 
 
 def _main(args=None):
@@ -30,9 +29,9 @@ def _main(args=None):
 
     elastic = Elasticsearch(
         ['localhost'],
-        http_auth=(elastic_user, elastic_pass),
+        http_auth=(ELASTIC_USER, ELASTIC_PASS),
         scheme="http",
-        port=elastic_port,
+        port=ELASTIC_PORT,
     )
 
     df_names = pd.read_csv('data/load/sample_companies_name.csv')
@@ -77,7 +76,7 @@ def match_by_fuzzy(name, iso_country):
         match_data.append(["", "", name, ""])
         return match_data
 
-    print(" documents found", res['hits']['total'])
+    print("documents found", res['hits']['total'])
 
     for doc in res['hits']['hits']:
         match_data.append([doc['_source']['doc_std_name'],
@@ -88,10 +87,18 @@ def match_by_fuzzy(name, iso_country):
     return match_data
 
 
-def read_data():
+@click.command()
+@click.option('--csv', default='input.csv',
+              help='Csv file that contains the companies list.')
+def normalize_names(csv):
     """
     prueba
     """
+    df_names = pd.read_csv(csv)
+
+    for index, row in df_names.iterrows():
+        example = row['companies']
+        normalizations.extract_stop_words(example)
 
     return 0
 
@@ -99,4 +106,4 @@ def read_data():
 if __name__ == "__main__":
     # extract_stop_words()
     # _main()
-    cleaner.extract_stop_words()
+    normalize_names()
