@@ -1,11 +1,13 @@
 import sys
 import click
 import configparser
+import textdistance
 import pandas as pd
 import elasticsearch
 from cib.cleaner import normalizations
 from elasticsearch import Elasticsearch
 from fuzzywuzzy import fuzz
+
 
 config = configparser.ConfigParser()
 config.read('cib/config.ini')
@@ -50,7 +52,7 @@ def match_by_elastic(df_names, column):
     df_elastic = pd.DataFrame(match_result,
                              columns=['doc_std_name', 'doc_std_name_id',
                                       'orbis_name', 'number_patents',
-                                      'elastic_score', 'pam_score'])
+                                      'elastic_score'])
 
     print("Total companies not found ", not_found)
     print("Total candidates for matching ", total_found)
@@ -88,7 +90,7 @@ def elastic_query(name, iso_country):
                                 })
     except elasticsearch.ElasticsearchException as es1:
         print("Error:", es1)
-        match_data.append(["", "", name, "", '0'])
+        match_data.append(["", "", name, ""])
         return match_data
 
     print("documents found", res['hits']['total'])
@@ -97,7 +99,7 @@ def elastic_query(name, iso_country):
         match_data.append([doc['_source']['doc_std_name'],
                            doc['_source']['doc_std_name_id'], name,
                            doc['_source']['n_patents'],
-                           doc['_score'], '0'])
+                           doc['_score']])
         # print("%s) %s" % (doc['_id'], doc['_source']['doc_std_name']))
 
     return match_data
@@ -123,10 +125,42 @@ def distance_matching_proccesor(df_pam):
     for index, row in df_pam.iterrows():
         ratio = fuzz.token_sort_ratio(row['orbis_name'].lower(),
                                          row['doc_std_name'].lower())
-        print(row['orbis_name'], row['doc_std_name'], ratio)
-        df_pam.set_value(index, 'pam_score', ratio)
+        jaro_winkler_score = textdistance.jaro_winkler(
+                                         row['orbis_name'].lower(),
+                                         row['doc_std_name'].lower())
+        elastic_score = row['elastic_score']
+        name_length = len(row['orbis_name'].split())
+        if name_length > 5 : elastic_score -= 10
+        distance_score = calculate_distance_score(ratio, jaro_winkler_score,
+                                                  name_length)
+        final_score = pam_score(20, elastic_score, distance_score)
+        df_pam.set_value(index, 'levensthein_score', ratio)
+        df_pam.set_value(index, 'jaro_winkler_score', jaro_winkler_score)
+        df_pam.set_value(index, 'pam_score', final_score)
 
     return df_pam
+
+def pam_score(filter, elastic_score, distance_score):
+    if elastic_score < 13:
+        new_elastic_score = 0
+    elif elastic_score < 15:
+        new_elastic_score = 30 * 0.2
+    elif elastic_score < 20:
+        new_elastic_score = 60 * 0.2
+    else:
+        new_elastic_score = 100 * 0.2
+
+    pam_score = new_elastic_score + (distance_score * 0.6) + filter
+
+    return pam_score
+
+def calculate_distance_score(levensthein_score, jaro_winkler_score,
+                             name_length):
+    if name_length > 5 and levensthein_score < 80 : levensthein_score -= 20
+    if name_length > 5 and jaro_winkler_score < 0.8 : jaro_winkler_score -= 0.2
+
+    return (levensthein_score * 0.7) + ((jaro_winkler_score * 100) * 0.3)
+
 
 @click.command()
 @click.option('--csv', default='/data/loads/companies.csv',
