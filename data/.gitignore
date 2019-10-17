@@ -1,2 +1,4 @@
 loads/*
-restuls/*
+results/*
+!loads/sample_companies_name.csv
+!results/sample_patstat_matching.csv

@@ -1,4 +1,3 @@
-import pandas as pd
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 
@@ -9,18 +8,21 @@ def extract_stop_words(string=""):
     """
     stop_words = set(stopwords.words('english'))
     word_tokens = word_tokenize(string.lower())
+    normalized_name = string
 
     # filtered_sentence = [w for w in word_tokens if not w in stop_words]
     filtered_sentence = []
 
     for w in word_tokens:
-        if w in stop_words:
+        if w not in stop_words:
             filtered_sentence.append(w)
 
     if filtered_sentence and (
-        len(word_tokens) > 3) and "&" not in word_tokens:
-        print(string)
-        print(filtered_sentence)
+            len(word_tokens) > 3) and "&" not in word_tokens:
+        normalized_name = " ".join(filtered_sentence)
+
+    # print(test)
+    return normalized_name.upper()
 
 
 def magerman_normalization():
