@@ -1,6 +1,5 @@
 import sys
 import click
-import configparser
 import textdistance
 import pandas as pd
 from pam.searchengine import SearchEngine
