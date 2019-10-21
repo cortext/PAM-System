@@ -3,19 +3,9 @@ import click
 import configparser
 import textdistance
 import pandas as pd
-import elasticsearch
+from pam.searchengine import SearchEngine
 from pam.cleaner import normalizations
-from elasticsearch import Elasticsearch
 from fuzzywuzzy import fuzz
-
-
-config = configparser.ConfigParser()
-config.read('pam/config.ini')
-
-ELASTIC_HOST = config['elasticsearch']['host']
-ELASTIC_PORT = config['elasticsearch']['port']
-ELASTIC_USER = config['elasticsearch']['user']
-ELASTIC_PASS = config['elasticsearch']['password']
 
 
 def match_by_elastic(df_names, column):
@@ -28,18 +18,14 @@ def match_by_elastic(df_names, column):
 
     print("Querying elasticsearch")
 
-    elastic = Elasticsearch(
-        ['localhost'],
-        http_auth=(ELASTIC_USER, ELASTIC_PASS),
-        scheme="http",
-        port=ELASTIC_PORT,
-    )
-
+    search_engine = SearchEngine()
     data = []
 
     for index, row in df_names.iterrows():
         print(row[column])
-        match_result = elastic_query(row[column], row['cnty_iso'])
+        search_engine.company_name = row[column]
+        search_engine.country_filter = row['cnty_iso']
+        match_result = search_engine.query_by_company()
         if not match_result:
             not_found = not_found + 1
         else:
@@ -58,51 +44,6 @@ def match_by_elastic(df_names, column):
     print("Total candidates for matching ", total_found)
 
     return df_elastic
-
-
-def elastic_query(name, iso_country):
-    """
-    match_by_fuzzy
-    """
-    name = str(name)
-    match_data = []
-
-    try:
-        res = elastic.search(index="cib_patstat_applicants2",
-                             body={
-                                  "size": 300,
-                                  "min_score": 10,
-                                  "query": {
-                                    "bool": {
-                                      "must":
-                                        {
-                                          "match": {
-                                            "doc_std_name": name
-                                          }
-                                        },
-                                        "filter": {
-                                        "term": {
-                                          "iso_ctry.keyword": iso_country
-                                           }
-                                        }
-                                    }
-                                  }
-                                })
-    except elasticsearch.ElasticsearchException as es1:
-        print("Error:", es1)
-        match_data.append(["", "", name, ""])
-        return match_data
-
-    print("documents found", res['hits']['total'])
-
-    for doc in res['hits']['hits']:
-        match_data.append([doc['_source']['doc_std_name'],
-                           doc['_source']['doc_std_name_id'], name,
-                           doc['_source']['n_patents'],
-                           doc['_score']])
-        # print("%s) %s" % (doc['_id'], doc['_source']['doc_std_name']))
-
-    return match_data
 
 
 def normalize_names(csv, column):
