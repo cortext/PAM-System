@@ -18,11 +18,11 @@ setup(
     license='LGPL',
     author='Juan Pablo O',
     author_email='juanpablospinadelgado@esiee.fr',
-    url='https://github.com/cortext/cib',
+    url='https://github.com/cortext/pam',
     packages=find_packages(exclude=('tests', 'docs')),
     entry_points={
           'console_scripts': [
-              'cib = cib.__main__:_main'
+              'pam = pam.__main__:_main'
           ]
     },
 	classifiers = (

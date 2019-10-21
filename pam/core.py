@@ -4,13 +4,13 @@ import configparser
 import textdistance
 import pandas as pd
 import elasticsearch
-from cib.cleaner import normalizations
+from pam.cleaner import normalizations
 from elasticsearch import Elasticsearch
 from fuzzywuzzy import fuzz
 
 
 config = configparser.ConfigParser()
-config.read('cib/config.ini')
+config.read('pam/config.ini')
 
 ELASTIC_HOST = config['elasticsearch']['host']
 ELASTIC_PORT = config['elasticsearch']['port']
@@ -178,7 +178,3 @@ def cli(csv, column, output):
     df_elastic = match_by_elastic(df_companies, column)
     df_pam = distance_matching_proccesor(df_elastic)
     df_pam.to_csv(output)
-
-
-if __name__ == "__main__":
-    cli()
