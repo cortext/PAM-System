@@ -6,7 +6,22 @@ from pam.cleaner import normalizations
 from pam.approximatematches import fuzzy
 
 
-def match_by_elastic(df_names, column):
+def cleaner_processor(csv, column):
+    """
+    normalize_names
+    """
+    df_names = pd.read_csv(csv)
+    company_name = ""
+
+    for index, row in df_names.iterrows():
+        example = str(row[column])
+        company_name = normalizations.extract_stop_words(example)
+        df_names.loc[index, column] = company_name
+
+    return df_names
+
+
+def search_engine_proccesor(df_names, column):
     """
     The main routine.
     """
@@ -44,21 +59,6 @@ def match_by_elastic(df_names, column):
     return df_elastic
 
 
-def normalize_names(csv, column):
-    """
-    normalize_names
-    """
-    df_names = pd.read_csv(csv)
-    company_name = ""
-
-    for index, row in df_names.iterrows():
-        example = str(row[column])
-        company_name = normalizations.extract_stop_words(example)
-        df_names.set_value(index, column, company_name)
-
-    return df_names
-
-
 def distance_matching_proccesor(df_pam):
     """
     distance_matching_proccesor
@@ -69,14 +69,36 @@ def distance_matching_proccesor(df_pam):
         elastic_score = row['elastic_score']
         score_list = fuzzy.run_distance_matching(company_name, patstat_name,
                                                    elastic_score)
-        df_pam.set_value(index, 'levensthein_score',
-                         score_list['levensthein_score'])
-        df_pam.set_value(index, 'jaro_winkler_score',
-                         score_list['jaro_winkler_score'])
-        df_pam.set_value(index, 'pam_score', score_list['pam_score'])
+
+        df_pam.loc[index, 'levensthein_score'] = score_list['levensthein_score']
+
+        df_pam.loc[index, 'jaro_winkler_score'] = score_list['jaro_winkler_score']
+
+        df_pam.loc[index, 'pam_score'] = score_list['pam_score']
 
     return df_pam
 
+
+def selector_processor(df_pam):
+    """
+    distance_matching_proccesor
+    """
+    accurate_matches = df_pam[(df_pam['pam_score'] > 79)]
+    accurate_matches = df_pam[(df_pam['pam_score'] > 66) &
+                              (df_pam['number_patents'] < 11)]
+
+    wrong_matches = df_pam[(df_pam['pam_score'] < 58)]
+    wrong_matches = df_pam[(df_pam['pam_score'] > 58) &
+                              (df_pam['pam_score'] < 66) &
+                              (df_pam['number_patents'] < 10)]
+
+    matches_to_check = df_pam[(df_pam['pam_score'] > 58) &
+                              (df_pam['pam_score'] < 66) &
+                              (df_pam['number_patents'] > 10)]
+
+    accurate_matches.to_csv('data/results/accurate_matches.csv')
+    wrong_matches.to_csv('data/results/wrong_matches.csv')
+    matches_to_check.to_csv('data/results/matches_to_check.csv')
 
 
 @click.command()
@@ -91,7 +113,8 @@ def cli(csv, column, output):
     """
     cli
     """
-    df_companies = normalize_names(csv, column)
-    df_elastic = match_by_elastic(df_companies, column)
+    df_companies = cleaner_processor(csv, column)
+    df_elastic = search_engine_proccesor(df_companies, column)
     df_pam = distance_matching_proccesor(df_elastic)
+    selector_processor(df_pam)
     df_pam.to_csv(output)
