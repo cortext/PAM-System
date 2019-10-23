@@ -1,3 +1,2 @@
-def get_answer():
-    """Get an answer."""
+def free_up_dataframes():
     return True
