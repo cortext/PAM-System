@@ -1,6 +1,7 @@
 import sys
 import click
 import pandas as pd
+import pam.helpers as helper
 import pam.selector as selector
 from pam.cleaner import normalizations
 from pam.searchengine import SearchEngine
@@ -11,6 +12,7 @@ def cleaner_processor(csv, column):
     """
     normalize_names
     """
+
     df_names = pd.read_csv(csv)
     company_name = ""
 
@@ -22,7 +24,7 @@ def cleaner_processor(csv, column):
     return df_names
 
 
-def search_engine_proccesor(df_names, column):
+def search_engine_proccesor(df_names, column, juridiction_filter=True):
     """
     The main routine.
     """
@@ -32,6 +34,7 @@ def search_engine_proccesor(df_names, column):
     print("Querying elasticsearch.....")
 
     search_engine = SearchEngine()
+    search_engine.juridiction_filter = juridiction_filter
     data = []
 
     for index, row in df_names.iterrows():
@@ -59,6 +62,42 @@ def search_engine_proccesor(df_names, column):
 
     return df_elastic
 
+def search_engine_proccesor2(df_names, column):
+    """
+    The main routine.
+    """
+    not_found = 0
+    total_found = 0
+
+    print("Querying elasticsearch.....")
+
+    search_engine = SearchEngine()
+    data = []
+
+    for index, row in df_names.iterrows():
+        print(row[column])
+        search_engine.company_name = row[column]
+        search_engine.country_filter = row['cnty_iso']
+        match_result = search_engine.query_by_company_out_juridiction()
+        if not match_result:
+            not_found = not_found + 1
+        else:
+            total_found = total_found + len(match_result)
+        data = data + match_result
+
+    match_result = data
+
+    del df_names
+    df_elastic = pd.DataFrame(match_result,
+                              columns=['doc_std_name', 'doc_std_name_id',
+                                       'orbis_name', 'number_patents',
+                                       'elastic_score'])
+
+    print("Total companies not found ", not_found)
+    print("Total candidates for matching ", total_found)
+    print("Total number of patents ", df_elastic['number_patents'].sum())
+
+    return df_elastic
 
 def distance_matching_proccesor(df_pam):
     """
@@ -94,8 +133,19 @@ def cli(csv, column, output):
     """
     cli
     """
+    # helper.number_of_guos_detected()
+    # helper.count_the_total_matches()
+
     df_companies = cleaner_processor(csv, column)
     df_elastic = search_engine_proccesor(df_companies, column)
     df_pam = distance_matching_proccesor(df_elastic)
     selector.run_selector_processor(df_pam)
     df_pam.to_csv(output)
+    #
+    # del df_elastic
+    # del df_pam
+    #
+    # df_elastic = search_engine_proccesor2(df_companies, column)
+    # df_pam = distance_matching_proccesor(df_elastic)
+    # selector.run_selector_processor2(df_pam)
+    # df_pam.to_csv(output)

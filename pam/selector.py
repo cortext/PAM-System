@@ -48,3 +48,7 @@ def run_selector_processor(df_pam):
     accurate_matches.to_csv('data/results/accurate_matches.csv')
     wrong_matches.to_csv('data/results/wrong_matches.csv')
     matches_to_check.to_csv('data/results/matches_to_check.csv')
+
+    del accurate_matches
+    del wrong_matches
+    del matches_to_check

@@ -16,7 +16,7 @@ def run_distance_matching(company_name, patstat_name, elastic_score):
     distance_score = score.calculate_distance_score(ratio,
     jaro_winkler_score,
     name_length)
-    pam_score = score.pam_score(20, elastic_score, distance_score)
+    pam_score = score.pam_score(100, elastic_score, distance_score)
 
     return {
     'levensthein_score' : pam_score,

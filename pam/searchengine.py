@@ -33,6 +33,7 @@ class SearchEngine():
 
        self.company_name = None
        self.country_filter = None
+       self.juridiction_filter = True
 
     def init_connection(self):
         """
@@ -50,15 +51,35 @@ class SearchEngine():
 
     def query_by_company(self):
         """
-        match_by_fuzzy
+        query_by_company
         """
         match_data = []
         self.company_name = str(self.company_name)
-        #print(self.company_name)
+        query = self.query_builder()
 
         try:
             res = self.connection.search(index="cib_patstat_applicants2",
-            body={
+            body=query)
+        except elasticsearch.ElasticsearchException as es1:
+            print("Error:", es1)
+            match_data.append(["", "", self.company_name, ""])
+            return match_data
+
+        print("documents found", res['hits']['total'])
+
+        for doc in res['hits']['hits']:
+            match_data.append([doc['_source']['doc_std_name'],
+                               doc['_source']['doc_std_name_id'], self.company_name,
+                               doc['_source']['n_patents'],
+                               doc['_score']])
+            # print("%s) %s" % (doc['_id'], doc['_source']['doc_std_name']))
+
+        return match_data
+
+
+    def query_builder(self):
+        if self.juridiction_filter:
+            query = {
             "size": 300,
             "min_score": 10,
             "query": {
@@ -76,19 +97,26 @@ class SearchEngine():
             }
             }
             }
-            })
-        except elasticsearch.ElasticsearchException as es1:
-            print("Error:", es1)
-            match_data.append(["", "", self.company_name, ""])
-            return match_data
+            }
+        else:
+            query = {
+            "size": 300,
+            "min_score": 10,
+            "query": {
+            "bool": {
+            "must":
+            {
+            "match": {
+            "doc_std_name": self.company_name
+            }
+            },
+            "must_not": {
+            "match": {
+            "iso_ctry.keyword": self.country_filter
+            }
+            }
+            }
+            }
+            }
 
-        print("documents found", res['hits']['total'])
-
-        for doc in res['hits']['hits']:
-            match_data.append([doc['_source']['doc_std_name'],
-                               doc['_source']['doc_std_name_id'], self.company_name,
-                               doc['_source']['n_patents'],
-                               doc['_score']])
-            # print("%s) %s" % (doc['_id'], doc['_source']['doc_std_name']))
-
-        return match_data
+        return query
