@@ -16,11 +16,16 @@ score_distribution = {
 'elasticsearch' : 0.2,
 'levensthein'   : 0.7,
 'jaro_winkler': 0.3,
-'filter': 0.2,
+'query_used': 0.2,
 'distance_score': 0.6
 }
 
-def pam_score(filter, elastic_score, distance_score):
+score_for_query = {
+'restricted_to_jurisdiction' : 100,
+'out_jurisdiction'   : 0
+}
+
+def pam_score(query, elastic_score, distance_score):
     """
     pam_score
     """
@@ -33,7 +38,7 @@ def pam_score(filter, elastic_score, distance_score):
     elif elastic_score < elastic_score_scale['high']['range']:
         new_elastic_score = elastic_score_scale['high']['value']
 
-    filter_score = filter * score_distribution['filter']
+    filter_score = score_for_query[query] * score_distribution['query_used']
     new_elastic_score = new_elastic_score * score_distribution['elasticsearch']
     pam_score = new_elastic_score + (distance_score
                                      * score_distribution['distance_score']) + filter_score

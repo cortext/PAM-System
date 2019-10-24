@@ -52,3 +52,15 @@ def run_selector_processor(df_pam):
     del accurate_matches
     del wrong_matches
     del matches_to_check
+
+def selector_accurate_matches(df_pam):
+    accurate_matches = df_pam[(df_pam['pam_score'] >
+                               accurate_matches_query['min_score'])]
+
+    accurate_matches = accurate_matches.append(df_pam[
+        (df_pam['pam_score'] > accurate_matches_query['score_patent_condition'])
+        & (df_pam['pam_score'] < accurate_matches_query['min_score'])
+        & (df_pam['number_patents'] < accurate_matches_query['number_patents'])
+        ])
+
+    return accurate_matches

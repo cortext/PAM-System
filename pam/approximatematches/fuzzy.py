@@ -2,7 +2,8 @@ import textdistance
 from fuzzywuzzy import fuzz
 from pam.approximatematches import score
 
-def run_distance_matching(company_name, patstat_name, elastic_score):
+def run_distance_matching(company_name, patstat_name,
+                          elastic_score, query):
     """
     run_distance_matching
     """
@@ -16,7 +17,7 @@ def run_distance_matching(company_name, patstat_name, elastic_score):
     distance_score = score.calculate_distance_score(ratio,
     jaro_winkler_score,
     name_length)
-    pam_score = score.pam_score(100, elastic_score, distance_score)
+    pam_score = score.pam_score(query, elastic_score, distance_score)
 
     return {
     'levensthein_score' : pam_score,

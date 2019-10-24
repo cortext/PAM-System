@@ -33,7 +33,7 @@ class SearchEngine():
 
        self.company_name = None
        self.country_filter = None
-       self.juridiction_filter = True
+       self.query = 'worldwide'
 
     def init_connection(self):
         """
@@ -78,7 +78,7 @@ class SearchEngine():
 
 
     def query_builder(self):
-        if self.juridiction_filter:
+        if self.query == 'restricted_to_jurisdiction' :
             query = {
             "size": 300,
             "min_score": 10,
@@ -98,7 +98,7 @@ class SearchEngine():
             }
             }
             }
-        else:
+        elif self.query == 'out_jurisdiction':
             query = {
             "size": 300,
             "min_score": 10,
