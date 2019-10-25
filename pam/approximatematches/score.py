@@ -25,6 +25,7 @@ score_for_query = {
 'out_jurisdiction'   : 0
 }
 
+
 def pam_score(query, elastic_score, distance_score):
     """
     pam_score
@@ -44,6 +45,7 @@ def pam_score(query, elastic_score, distance_score):
                                      * score_distribution['distance_score']) + filter_score
 
     return pam_score
+
 
 def calculate_distance_score(levensthein_score, jaro_winkler_score,
                              name_length):

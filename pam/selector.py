@@ -54,6 +54,9 @@ def run_selector_processor(df_pam):
     del matches_to_check
 
 def selector_accurate_matches(df_pam):
+    """
+    selector_accurate_matches
+    """
     accurate_matches = df_pam[(df_pam['pam_score'] >
                                accurate_matches_query['min_score'])]
 
@@ -64,3 +67,31 @@ def selector_accurate_matches(df_pam):
         ])
 
     return accurate_matches
+
+
+def selector_wrong_matches(df_pam):
+    """
+    selector_wrong_matches
+    """
+    wrong_matches = df_pam[(df_pam['pam_score'] <
+                            wrong_matches_query['max_score'])]
+    wrong_matches = wrong_matches.append(df_pam[
+        (df_pam['pam_score'] > wrong_matches_query['max_score']) &
+        (df_pam['pam_score'] < wrong_matches_query['score_patent_condition']) &
+        (df_pam['number_patents'] < wrong_matches_query['number_patents'])
+        ])
+
+    return wrong_matches
+
+
+def selector_matches_to_check(df_pam):
+    """
+    selector_matches_to_check
+    """
+    matches_to_check = df_pam[
+        (df_pam['pam_score'] > matches_to_check_query['min_score']) &
+        (df_pam['pam_score'] < matches_to_check_query['score_patent_condition'])
+        & (df_pam['number_patents'] > matches_to_check_query['number_patents'])
+        ]
+
+    return matches_to_check
