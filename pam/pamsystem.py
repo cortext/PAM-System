@@ -12,7 +12,7 @@ class PamSystem():
     """
     Application-level class, builds the application
     """
-    QUERIES = ['restricted_to_jurisdiction']
+    QUERIES = ['restricted_to_jurisdiction', 'out_jurisdiction']
 
     def __init__(self, **kwargs):
         """
@@ -38,6 +38,7 @@ class PamSystem():
         self.cleaner_processor()
         self.search_engine_proccesor()
         self.distance_matching_proccesor()
+        self.df_pam = helper.groupby_pam_dataframe(self.df_pam)
         self.selector_processor()
 
 
@@ -128,7 +129,3 @@ class PamSystem():
 
     def set_df_companies(self, csv):
         self.df_companies = pd.read_csv(csv)
-
-
-    def get_empty_df():
-        return pd.DataFrame()

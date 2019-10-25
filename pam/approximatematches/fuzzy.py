@@ -2,6 +2,7 @@ import textdistance
 from fuzzywuzzy import fuzz
 from pam.approximatematches import score
 
+
 def run_distance_matching(company_name, patstat_name,
                           elastic_score, query):
     """

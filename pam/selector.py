@@ -18,6 +18,7 @@ matches_to_check_query = {
 'number_patents': 10
 }
 
+
 def run_selector_processor(df_pam):
     """
     distance_matching_proccesor
@@ -52,6 +53,7 @@ def run_selector_processor(df_pam):
     del accurate_matches
     del wrong_matches
     del matches_to_check
+
 
 def selector_accurate_matches(df_pam):
     """
