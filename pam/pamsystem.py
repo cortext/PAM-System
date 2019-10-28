@@ -18,6 +18,7 @@ class PamSystem():
         """
         Initialize a new Elasticsearch connection.
         """
+        
         # init the PAM System attributes
         self.df_companies = ''
         self.company_name_column = ''
@@ -38,7 +39,7 @@ class PamSystem():
         self.cleaner_processor()
         self.search_engine_proccesor()
         self.distance_matching_proccesor()
-        self.df_pam = helper.groupby_pam_dataframe(self.df_pam)
+        #self.df_pam = helper.groupby_pam_dataframe(self.df_pam)
         self.selector_processor()
 
 
@@ -47,6 +48,7 @@ class PamSystem():
         cleaner_processor
         """
 
+        print("Running processor.....")
         company_name = ""
 
         for index, row in self.df_companies.iterrows():
@@ -99,6 +101,9 @@ class PamSystem():
         """
         distance_matching_proccesor
         """
+
+        print("Running distance matching processor.....")
+
         self.df_pam = self.df_elastic
 
         for index, row in self.df_pam.iterrows():
@@ -121,6 +126,8 @@ class PamSystem():
         """
         selector_proccesor
         """
+
+        print("Running selector processor.....")
 
         self.df_accurate_matches = selector.selector_accurate_matches(self.df_pam)
         self.df_wrong_matches = selector.selector_wrong_matches(self.df_pam)

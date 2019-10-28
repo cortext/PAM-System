@@ -18,7 +18,7 @@ def cli(csv, column, country, output):
     """
     cli
     """
-    
+
     pam_system = PamSystem()
     pam_system.set_df_companies(csv)
     pam_system.company_name_column = column

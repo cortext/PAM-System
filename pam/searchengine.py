@@ -18,6 +18,7 @@ class SearchEngine():
         # create an elastic search connection
         self.connection = self.init_connection()
 
+
     def build_parameters(self, config_file = 'pam/config.ini'):
        """
        Configure the application.
@@ -35,6 +36,7 @@ class SearchEngine():
        self.country_filter = None
        self.query = 'worldwide'
 
+
     def init_connection(self):
         """
         Set connection
@@ -49,10 +51,12 @@ class SearchEngine():
 
         return connection
 
+
     def query_by_company(self):
         """
         query_by_company
         """
+
         match_data = []
         self.company_name = str(self.company_name)
         query = self.query_builder()
@@ -65,7 +69,7 @@ class SearchEngine():
             match_data.append(["", "", self.company_name, ""])
             return match_data
 
-        print("documents found", res['hits']['total'])
+        # print("documents found", res['hits']['total'])
 
         for doc in res['hits']['hits']:
             match_data.append([doc['_source']['doc_std_name'],
@@ -78,6 +82,10 @@ class SearchEngine():
 
 
     def query_builder(self):
+        """
+        query_builder
+        """
+
         if self.query == 'restricted_to_jurisdiction' :
             query = {
             "size": 300,
