@@ -34,21 +34,21 @@ def selector_accurate_matches(df_pam):
     ])
 
     accurate_matches = accurate_matches[
-            (accurate_matches['levensthein_score'] >= 70)
-            | (accurate_matches['jaro_winkler_score'] >= 0.7)
-            | (accurate_matches['ratcliff_obershelp_score'] >= 0.7)
-            ]
+        (accurate_matches['levensthein_score'] >= 70)
+        | (accurate_matches['jaro_winkler_score'] >= 0.7)
+        | (accurate_matches['ratcliff_obershelp_score'] >= 0.7)
+    ]
 
     accurate_matches = accurate_matches[
-            (accurate_matches['pam_score'] >= 68)
-            | (accurate_matches['elastic_score'] >= 11)
-            | (accurate_matches['jaro_winkler_score'] >= 0.9)
-            ]
+        (accurate_matches['pam_score'] >= 68)
+        | (accurate_matches['elastic_score'] >= 11)
+        | (accurate_matches['jaro_winkler_score'] >= 0.9)
+    ]
 
     accurate_matches = accurate_matches[
-            (accurate_matches['pam_score'] > 71)
-            | (accurate_matches['jaro_winkler_score'] >= 0.85)
-            ]
+        (accurate_matches['pam_score'] > 71)
+        | (accurate_matches['jaro_winkler_score'] >= 0.85)
+    ]
 
     accurate_matches = accurate_matches[(accurate_matches['elastic_score']
                                          > 19) |
@@ -82,16 +82,23 @@ def selector_accurate_matches(df_pam):
                                         ]
 
     accurate_matches = accurate_matches.append(df_pam[
-                                        (df_pam['levensthein_score']
-                                         >= 65) &
-                                        (df_pam['jaro_winkler_score']
-                                         >= 0.89)
-                                        ])
+        (df_pam['levensthein_score']
+         >= 65) &
+        (df_pam['jaro_winkler_score']
+         >= 0.89)
+    ])
+
+    accurate_matches = accurate_matches[
+        (accurate_matches['pam_score'] >= 73) |
+        (accurate_matches['elastic_score'] >= 13) |
+        (accurate_matches['jaro_winkler_score'] > 0.92) |
+        (accurate_matches['orbis_name'].str.split().str.len().lt(2))
+    ]
 
     return accurate_matches
 
 
-def selector_wrong_matches(df_pam):
+def selector_wrong_matches(df_pam, accurate_matches):
     """
     selector_wrong_matches
     """
@@ -104,10 +111,20 @@ def selector_wrong_matches(df_pam):
         (df_pam['number_patents'] < wrong_matches_query['number_patents'])
     ])
 
+    """
+    wrong_matches = wrong_matches.append(
+        accurate_matches[(accurate_matches['pam_score'] < 73) &
+                         (accurate_matches['number_patents'] < 10) &
+                         (accurate_matches['elastic_score'] < 13) &
+                         (accurate_matches['jaro_winkler_score'] < 0.92) &
+                         (accurate_matches['orbis_name'].str.split(
+                         ).str.len().gt(1))
+                         ])
+    """
     return wrong_matches
 
 
-def selector_matches_to_check(df_pam):
+def selector_matches_to_check(df_pam, accurate_matches):
     """
     selector_matches_to_check
     """
@@ -118,5 +135,18 @@ def selector_matches_to_check(df_pam):
          matches_to_check_query['score_patent_condition'])
         & (df_pam['number_patents'] > matches_to_check_query['number_patents'])
     ]
-
+    """
+    matches_to_check = matches_to_check.append
+    (accurate_matches[(accurate_matches['pam_score'] < 73) &
+                      (accurate_matches['number_patents'] > 9) &
+                      (accurate_matches['elastic_score'] < 13) &
+                      (accurate_matches['jaro_winkler_score'] < 0.92) &
+                      (accurate_matches['orbis_name'].str.split(
+                      ).str.len().gt(1))
+                      ])
+    """
     return matches_to_check
+
+
+def selector_feed_not_found():
+    return False

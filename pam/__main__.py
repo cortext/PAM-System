@@ -30,12 +30,15 @@ def cli(csv, column, country, output):
     for query in PamSystem.QUERIES:
         pam_system.query = query
         pam_system._run()
+
+        """
         pam_system.df_accurate_matches.to_csv('data/results/pam_results_'
                                               + query + '.csv')
         pam_system.df_wrong_matches.to_csv('data/results/pam_wrong_'
                                            + query + '.csv')
         pam_system.df_to_check_matches.to_csv('data/results/pam_to_check_'
                                               + query + '.csv')
+        """
 
         df_pam_wrong = df_pam_wrong.append(
                 pam_system.df_wrong_matches)
@@ -44,9 +47,7 @@ def cli(csv, column, country, output):
         df_pam_accurate = df_pam_accurate.append(
             pam_system.df_accurate_matches)
 
-    print('grouping pam dataframe...')
-    df_pam_accurate.to_csv(output + 'accurate_matching2.csv')
-
+    print('Grouping pam dataframe...')
     df_pam_accurate = helper.groupby_pam_dataframe(df_pam_accurate)
     df_pam_checks = helper.groupby_pam_dataframe(df_pam_checks)
     df_pam_wrong = helper.groupby_pam_dataframe(df_pam_wrong)

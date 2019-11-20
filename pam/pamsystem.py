@@ -140,9 +140,10 @@ class PamSystem():
 
         self.df_accurate_matches = selector.selector_accurate_matches(
             self.df_pam)
-        self.df_wrong_matches = selector.selector_wrong_matches(self.df_pam)
+        self.df_wrong_matches = selector.selector_wrong_matches(
+                self.df_pam, self.df_accurate_matches)
         self.df_to_check_matches = selector.selector_matches_to_check(
-            self.df_pam)
+            self.df_pam, self.df_accurate_matches)
 
     def set_df_companies(self, csv):
         self.df_companies = pd.read_csv(csv)
