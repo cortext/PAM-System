@@ -34,6 +34,8 @@ class SearchEngine():
 
        self.company_name = None
        self.country_filter = None
+       self.company_id = None
+       self.name_type = None
        self.query = 'worldwide'
 
 
@@ -66,15 +68,17 @@ class SearchEngine():
             body=query)
         except elasticsearch.ElasticsearchException as es1:
             print("Error:", es1)
-            match_data.append(["", "", self.company_name, ""])
+            match_data.append(["", "", self.company_id,
+                               self.company_name, self.name_type, ""])
             return match_data
 
         # print("documents found", res['hits']['total'])
 
         for doc in res['hits']['hits']:
             match_data.append([doc['_source']['doc_std_name'],
-                               doc['_source']['doc_std_name_id'], self.company_name,
-                               doc['_source']['n_patents'],
+                               doc['_source']['doc_std_name_id'],
+                               self.company_id, self.company_name,
+                               self.name_type, doc['_source']['n_patents'],
                                doc['_score']])
             # print("%s) %s" % (doc['_id'], doc['_source']['doc_std_name']))
 
