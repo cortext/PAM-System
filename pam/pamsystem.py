@@ -1,9 +1,8 @@
 import pandas as pd
-# import pam.helpers as helper
-import pam.selector as selector
 from pam.cleaner import normalizations
 from pam.searchengine import SearchEngine
 from pam.approximatematches import fuzzy
+from pam.selector import PamSelector
 
 
 class PamSystem():
@@ -15,7 +14,7 @@ class PamSystem():
 
     def __init__(self, **kwargs):
         """
-        Initialize a new Elasticsearch connection.
+        Initialize a new PAM System instance.
         """
 
         # init the PAM System attributes
@@ -37,7 +36,6 @@ class PamSystem():
         self.cleaner_processor()
         self.search_engine_proccesor()
         self.distance_matching_proccesor()
-        # self.df_pam = helper.groupby_pam_dataframe(self.df_pam)
         self.selector_processor()
 
     def cleaner_processor(self):
@@ -69,7 +67,6 @@ class PamSystem():
         data = []
 
         for index, row in self.df_companies.iterrows():
-            # print(row[self.company_name_column])
             search_engine.company_name = row[self.company_name_column]
             search_engine.country_filter = row['cnty_iso']
             search_engine.company_id = row['new_bvd_id']
@@ -138,12 +135,12 @@ class PamSystem():
 
         print("Running selector processor.....")
 
-        self.df_accurate_matches = selector.selector_accurate_matches(
-            self.df_pam)
-        self.df_wrong_matches = selector.selector_wrong_matches(
-                self.df_pam, self.df_accurate_matches)
-        self.df_to_check_matches = selector.selector_matches_to_check(
-            self.df_pam, self.df_accurate_matches)
+        selector = PamSelector(self.df_pam)
+        selector._run()
+
+        self.df_accurate_matches = selector.df_accurate_matches
+        self.df_wrong_matches = selector.df_wrong_matches
+        self.df_to_check_matches = selector.df_to_check_matches
 
     def set_df_companies(self, csv):
         self.df_companies = pd.read_csv(csv)
