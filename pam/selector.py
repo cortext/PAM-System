@@ -34,7 +34,7 @@ class PamSelector():
         self.selector_accurate_matches()
         self.selector_matches_to_check()
         self.selector_wrong_matches()
-        # self.selector_enrich_not_found()
+        self.selector_enrich_not_found()
         # self.selectro_enrich_low_patents()
 
     def selector_base_matches(self):
@@ -79,35 +79,39 @@ class PamSelector():
                                  accurate_matches_query['number_patents'])
                              ])
 
-        accurate_matches = accurate_matches[
-                (accurate_matches['levensthein_score'] >= 70)
-                | (accurate_matches['jaro_winkler_score'] >= 0.7)
-                | (accurate_matches['ratcliff_obershelp_score'] >= 0.7)
-                ]
+        accurate_matches = self.query_by_parameterization(
+                accurate_matches, levensthein_score=70,
+                jaro_w_score=0.7, ratcliff_score=0.7)
 
-        accurate_matches = accurate_matches[
-                (accurate_matches['pam_score'] >= 68)
-                | (accurate_matches['elastic_score'] >= 11)
-                | (accurate_matches['jaro_winkler_score'] >= 0.9)
-                ]
+        accurate_matches = self.query_by_parameterization(
+                accurate_matches, elastic_score=11,
+                jaro_w_score=0.9, pam_score=68)
 
-        accurate_matches = accurate_matches[
-                (accurate_matches['pam_score'] >= 71)
-                | (accurate_matches['jaro_winkler_score'] >= 0.85)
-                ]
+        accurate_matches = self.query_by_parameterization(
+                accurate_matches, elastic_score=11,
+                jaro_w_score=0.9, pam_score=68)
 
-        accurate_matches = accurate_matches[
-                (accurate_matches['elastic_score'] >= 19) |
-                (accurate_matches['jaro_winkler_score'] >= 0.76) |
-                (accurate_matches['ratcliff_obershelp_score'] >= 0.78)
-            ]
+        accurate_matches = self.query_by_parameterization(
+                accurate_matches, jaro_w_score=0.85,
+                pam_score=71)
 
-        accurate_matches = accurate_matches[
-                (accurate_matches['elastic_score'] >= 14.3) |
-                (accurate_matches['levensthein_score'] >= 70) |
-                (accurate_matches['ratcliff_obershelp_score'] >= 0.70) |
-                (accurate_matches['number_patents'] >= 100)
-            ]
+        accurate_matches = self.query_by_parameterization(
+                accurate_matches, elastic_score=19,
+                jaro_w_score=0.85, ratcliff_score=0.78)
+
+        accurate_matches = self.query_by_parameterization(
+                accurate_matches, elastic_score=14.3, levensthein_score=0.85,
+                ratcliff_score=71, n_patents=100)
+
+        accurate_matches = self.query_by_parameterization(
+                accurate_matches, jaro_w_score=0.85,
+                pam_score=71)
+
+        """
+        accurate_matches = self.query_by_parameterization(
+                df_pam, levensthein_score=65, jaro_w_score=0.89
+            )
+        """
 
         accurate_matches = accurate_matches.append(df_pam[
             (df_pam['levensthein_score'] >= 65) &
@@ -159,12 +163,36 @@ class PamSelector():
 
         self.df_to_check_matches = matches_to_check
 
-    def selector_enriching_not_found(df_not_found):
-        return False
+    def selector_enrich_not_found(self):
+        """
+        selector_enriching_not_found
+        """
+
+        df_wrong = self.df_wrong_matches
+        df_accurate = self.df_accurate_matches
+        df_to_check = self.df_to_check_matches
+
+        companies_not_found = df_wrong[
+            (~df_wrong.orbis_id.isin(df_accurate.orbis_id))
+            & (~df_wrong.orbis_id.isin(df_to_check.orbis_id))
+            ]
+
+        not_found_many_patents = companies_not_found[
+                companies_not_found['number_patents'] > 10]
+
+        companies_not_found = not_found_many_patents.append(
+            companies_not_found[~companies_not_found.orbis_id.isin(
+                not_found_many_patents.orbis_id)]
+            )
+
+        self.df_to_check_matches = df_to_check.append(companies_not_found)
+
+    def selector_enrich_low_patents():
+        return True
 
     def query_by_parameterization(
-            pam_type_df, elastic_score=0, levensthein_score=0, jaro_w_score=0,
-            ratcliff_score=0, pam_score=0, n_patents=0,
+            self, pam_type_df, elastic_score=0, levensthein_score=0,
+            jaro_w_score=0, ratcliff_score=0, pam_score=0, n_patents=0,
             company_max_name_len=1000000):
         """
         selector_matches_to_check
@@ -175,10 +203,11 @@ class PamSelector():
 
         results = df[
                 (df['elastic_score'] >= elastic_score) |
-                (df['levensthein_score'] >= levensthein_score)
+                (df['levensthein_score'] >= levensthein_score) |
                 (df['jaro_winkler_score'] >= jaro_w_score) |
                 (df['ratcliff_obershelp_score'] >= ratcliff_score) |
                 (df['pam_score'] >= pam_score) |
+                (df['number_patents'] >= n_patents) |
                 (df['orbis_name'].str.split().str.len().lt(
                     company_max_name_len)
                  )
