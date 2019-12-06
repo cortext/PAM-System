@@ -34,7 +34,7 @@ class PamSelector():
         self.selector_accurate_matches()
         self.selector_matches_to_check()
         self.selector_wrong_matches()
-        self.selector_enrich_not_found()
+        # self.selector_enrich_not_found()
         # self.selectro_enrich_low_patents()
 
     def selector_base_matches(self):
@@ -88,10 +88,6 @@ class PamSelector():
                 jaro_w_score=0.9, pam_score=68)
 
         accurate_matches = self.query_by_parameterization(
-                accurate_matches, elastic_score=11,
-                jaro_w_score=0.9, pam_score=68)
-
-        accurate_matches = self.query_by_parameterization(
                 accurate_matches, jaro_w_score=0.85,
                 pam_score=71)
 
@@ -100,8 +96,8 @@ class PamSelector():
                 jaro_w_score=0.85, ratcliff_score=0.78)
 
         accurate_matches = self.query_by_parameterization(
-                accurate_matches, elastic_score=14.3, levensthein_score=0.85,
-                ratcliff_score=71, n_patents=100)
+                accurate_matches, elastic_score=14.3, levensthein_score=71,
+                ratcliff_score=0.85, n_patents=100)
 
         accurate_matches = self.query_by_parameterization(
                 accurate_matches, jaro_w_score=0.85,
