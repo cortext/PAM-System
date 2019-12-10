@@ -6,10 +6,28 @@ Pam system (Patent approximation matches system) is a textual analysis tool for 
 - Cleaning system for harmonizing company names (Stripping away organization suffix, removing stop words, using stemming words and synonyms).
 - Highly modular so it can be easily extended.
 - Use of a configuration language to facilitate the implementation of custom filters on the selector module.
-- Opportunistic method since takes as accurate some low score matches just based on results.
+- Opportunistic method since takes as a ccurate some low score matches just based on results.
 - A command-line interface for parameterizing  the system.
 - 100% Foss using GPLv3 License.
 
+
+Quick start
+-------------
+
+To run Pam System you can use `venv <https://pip.pypa.io>`_::
+
+    $ python3 -m venve pam_env
+    $ source pam_env/bin/active
+
+Now, you can install all the dependencies using `pip <https://pip.pypa.io>`_ and downloading some required `nltk data <https://www.nltk.org/data.html>`_ ::
+
+    (pam_env)$ pip install -r requeriments.txt
+    (pam_env)$ python setup.py install
+    (pam_env)$ python -m nltk.downloader all
+
+Finally you can run Pam using the csv file that contains entity list that you want to match::
+
+    (pam_env)$ python -m pam --csv data/loads/you_company_list_file.csv
 
 Maintainer
 -----------
