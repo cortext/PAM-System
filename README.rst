@@ -25,7 +25,7 @@ Now, you can install all the dependencies using `pip <https://pip.pypa.io>`_ and
     (pam_env)$ python setup.py install
     (pam_env)$ python -m nltk.downloader all
 
-Finally you can run Pam using the csv file that contains entity list that you want to match::
+Finally you can run Pam using the csv file that contains the entity list that you want to match::
 
     (pam_env)$ python -m pam --csv data/loads/you_company_list_file.csv
 
