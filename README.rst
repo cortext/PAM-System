@@ -1,10 +1,26 @@
-Corporate Invention Board
-========================
+PAM System
+====================
 
-This simple project is the python version of CIB 
+Pam system (Patent approximation matches system) is a textual analysis tool for matching legal type entities with its patent portfolio, for pairing entities the Pam system rely on the company name and combines full text search techniques using elasticsearch with some of the most famous approximate string matching algorithms such as Jaro-Winkler, Levensthein and Ratcliff. Moreover, it use each score for calculating its own pam score in order to select the best candidates and dismiss the wrong ones
 
-`Learn more <http://risis.eu/wp-content/uploads/2014/08/Poster-CIB-Final.pdf>`_.
 
----------------
+Maintainer
+-----------
 
-If you want to learn more about ``CIB process``, check out `this repository <https://github.com/cortext/cib>`_.
+`@gnupablo <https://github.com/gnupablo>`_ (Juan Pablo O)
+
+Funding
+-----------
+
+.. |tideliftlogo| image:: https://www.risis2.eu/wp-content/themes/risis2-theme/images/logo-risis-2.png
+   :width: 75
+   :alt: Tidelift
+
+.. list-table::
+   :widths: 10 100
+
+   * - |tideliftlogo|
+     - `The RISIS project`_ aims at creating a distributed research infrastructure to support and advance science and innovation studies. The project is funded by the European Union under Horizon2020 Research and Innovation Programme Grant Agreement n°82409.
+
+.. _The RISIS project: https://www.risis2.eu/
+

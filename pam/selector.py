@@ -1,5 +1,5 @@
 import pandas as pd
-
+import math
 
 class PamSelector():
 
@@ -79,6 +79,11 @@ class PamSelector():
                                  accurate_matches_query['number_patents'])
                              ])
 
+        accurate_matches = accurate_matches.append(df_pam[
+            (df_pam['levensthein_score'] >= 65) &
+            (df_pam['jaro_winkler_score'] >= 0.89)
+            ])
+
         accurate_matches = self.query_by_parameterization(
                 accurate_matches, levensthein_score=70,
                 jaro_w_score=0.7, ratcliff_score=0.7)
@@ -108,11 +113,6 @@ class PamSelector():
                 df_pam, levensthein_score=65, jaro_w_score=0.89
             )
         """
-
-        accurate_matches = accurate_matches.append(df_pam[
-            (df_pam['levensthein_score'] >= 65) &
-            (df_pam['jaro_winkler_score'] >= 0.89)
-            ])
 
         accurate_matches = accurate_matches[
                 (accurate_matches['pam_score'] >= 73) |
@@ -187,8 +187,9 @@ class PamSelector():
         return True
 
     def query_by_parameterization(
-            self, pam_type_df, elastic_score=0, levensthein_score=0,
-            jaro_w_score=0, ratcliff_score=0, pam_score=0, n_patents=0,
+            self, pam_type_df, elastic_score=math.inf,
+            levensthein_score=math.inf, jaro_w_score=math.inf,
+            ratcliff_score=math.inf, pam_score=math.inf, n_patents=math.inf,
             company_max_name_len=1000000):
         """
         selector_matches_to_check
