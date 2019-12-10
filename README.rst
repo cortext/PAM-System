@@ -15,8 +15,8 @@ Contributing
 
 Pam system happily accepts contributions. Below are some of the things that you can do to contribute:
 
--  [`Fork us`_] and [`request a pull`_] to the [`develop branch`_].
--  Submit [`bug reports or feature requests`_]
+-  `Fork us`_ and `request a pull`_ to the `develop branch`_.
+-  Submit `bug reports or feature requests`_
 
 .. _Fork us: https://github.com/cortext/PAM-System/fork)
 .. _request a pull: https://github.com/cortext/PAM-System/pulls
