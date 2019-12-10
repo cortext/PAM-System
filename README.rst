@@ -9,14 +9,19 @@ Maintainer
 
 `@gnupablo <https://github.com/gnupablo>`_ (Juan Pablo O)
 
+
 Contributing
------------
+-------------
 
-pam happily accepts contributions. Below are some of the things that you can do to contribute:
+Pam system happily accepts contributions. Below are some of the things that you can do to contribute:
 
--  [Fork us](https://github.com/cortext/PAM-System/fork) and [request a pull](https://github.com/cortext/PAM-System/pulls) to the [develop branch](https://github.com/cortext/PAM-System/tree/develop).
--  Submit [bug reports or feature requests](https://github.com/cortext/PAM-Systeme/issues)
+-  [`Fork us`_] and [`request a pull`_] to the [`develop branch`_].
+-  Submit [`bug reports or feature requests`_]
 
+.. _Fork us: https://github.com/cortext/PAM-System/fork)
+.. _request a pull: https://github.com/cortext/PAM-System/pulls
+.. _develop branch: https://github.com/cortext/PAM-System/tree/develop
+.. _bug reports or feature requests: https://github.com/cortext/PAM-Systeme/issues
 
 Funding
 -----------
