@@ -29,6 +29,25 @@ Finally you can run Pam using the csv file that contains entity list that you wa
 
     (pam_env)$ python -m pam --csv data/loads/you_company_list_file.csv
 
+How it works
+-------------
+
+.. image:: https://user-images.githubusercontent.com/1037304/70640570-6d902480-1c3c-11ea-97d7-57b8e3b17fbc.jpg
+
+This is how it works
+
++----------------------+------------+-------------------------------------------------------------------------------------------------------------+
+| Module               | Description|  Documentaton                                                                                               |
++======================+============+=============================================================================================================+
+| Cleaner              | NaN        |`Harmonizing company names <https://github.com/cortext/PAM-System/tree/develop/pam/cleaner>`_                |
++----------------------+------------+-------------------------------------------------------------------------------------------------------------+
+| Search engine        | NaN        |`Elasticsearch <https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query.html>`_|
++----------------------+------------+-------------------------------------------------------------------------------------------------------------+
+| Fuzzy string matching| NaN        | `Calculating PAM Score <https://github.com/cortext/PAM-System/tree/develop/pam/approximatematches>`_        |
++----------------------+------------+-------------------------------------------------------------------------------------------------------------+
+| Selector             | NaN        | `Writing your own selector <https://github.com/cortext/PAM-System/blob/develop/pam/selector.py>`_           |
++----------------------+------------+-------------------------------------------------------------------------------------------------------------+
+
 Maintainer
 -----------
 

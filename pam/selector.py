@@ -190,7 +190,7 @@ class PamSelector():
             self, pam_type_df, elastic_score=math.inf,
             levensthein_score=math.inf, jaro_w_score=math.inf,
             ratcliff_score=math.inf, pam_score=math.inf, n_patents=math.inf,
-            company_max_name_len=1000000):
+            company_max_name_len=0):
         """
         selector_matches_to_check
         """
