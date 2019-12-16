@@ -1,6 +1,7 @@
 import pandas as pd
 import math
 
+
 class PamSelector():
 
     base_matches_query = {
@@ -90,7 +91,7 @@ class PamSelector():
 
         accurate_matches = self.query_by_parameterization(
                 accurate_matches, elastic_score=11,
-                jaro_w_score=0.9, pam_score=68)
+                jaro_w_score=0.89, pam_score=68)
 
         accurate_matches = self.query_by_parameterization(
                 accurate_matches, jaro_w_score=0.85,
@@ -98,27 +99,20 @@ class PamSelector():
 
         accurate_matches = self.query_by_parameterization(
                 accurate_matches, elastic_score=19,
-                jaro_w_score=0.85, ratcliff_score=0.78)
+                jaro_w_score=0.85, ratcliff_score=0.78,
+                pam_score=78)
 
         accurate_matches = self.query_by_parameterization(
                 accurate_matches, elastic_score=14.3, levensthein_score=71,
                 ratcliff_score=0.85, n_patents=100)
 
-        accurate_matches = self.query_by_parameterization(
-                accurate_matches, jaro_w_score=0.85,
-                pam_score=71)
-
-        """
-        accurate_matches = self.query_by_parameterization(
-                df_pam, levensthein_score=65, jaro_w_score=0.89
-            )
-        """
-
         accurate_matches = accurate_matches[
-                (accurate_matches['pam_score'] >= 73) |
+                (accurate_matches['pam_score'] >= 72) |
                 (accurate_matches['elastic_score'] >= 13) |
                 (accurate_matches['jaro_winkler_score'] >= 0.93) |
-                (accurate_matches['orbis_name'].str.split().str.len().lt(2))
+                (accurate_matches['levensthein_score'] >= 77) |
+                (accurate_matches['orbis_name'].str.split().str.len().lt(2)) |
+                (len(accurate_matches['orbis_name']) < 13)
                 ]
 
         self.df_accurate_matches = accurate_matches
