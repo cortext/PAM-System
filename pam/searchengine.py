@@ -85,7 +85,7 @@ class SearchEngine():
 
         if self.query == 'restricted_to_jurisdiction':
             query = {
-                "size": 300,
+                "size": 30,
                 "min_score": 10,
                 "query": {
                     "bool": {
@@ -105,8 +105,8 @@ class SearchEngine():
             }
         elif self.query == 'out_jurisdiction':
             query = {
-                "size": 300,
-                "min_score": 10,
+                "size": 30,
+                "min_score": 15,
                 "query": {
                     "bool": {
                         "must":
