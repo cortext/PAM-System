@@ -17,7 +17,7 @@ Quick start
 To run Pam System you can use `venv <https://pip.pypa.io>`_::
 
     $ python3 -m venv pam_env
-    $ source pam_env/bin/active
+    $ source pam_env/bin/activate
 
 Now, you can install all the dependencies using `pip <https://pip.pypa.io>`_ and downloading some required `nltk data <https://www.nltk.org/data.html>`_ ::
 
