@@ -6,9 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile    
     volumes:
-      - type: bind
-        source: .data/
-        target: /app/data
+      - .data/:/app/data
     ports:
       - "3030:3030"
     environment:
@@ -21,15 +19,9 @@ services:
       context: elasticsearch/elastic/
       args:
         ELK_VERSION: $ELK_VERSION
-    mem_limit: 10G     
     volumes:
-      - type: bind
-        source: ./elasticsearch/elastic/config/elasticsearch.yml
-        target: /usr/share/elasticsearch/config/elasticsearch.yml
-        read_only: true
-      - type: volume
-        source: elasticsearch
-        target: /usr/share/elasticsearch/data
+      - ${ELASTIC_PATH}config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - elasticsearch:/usr/share/elasticsearch/data
     ports:
       - "9200:9200"
       - "9300:9300"
@@ -46,14 +38,8 @@ services:
       args:
         ELK_VERSION: $ELK_VERSION
     volumes:
-      - type: bind
-        source: .elasticsearch/logstash/config/logstash.yml
-        target: /usr/share/logstash/config/logstash.yml
-        read_only: true
-      - type: bind
-        source: .elasticsearch/logstash/pipeline
-        target: /usr/share/logstash/pipeline
-        read_only: true
+      - ${LOGSTASH_PATH}config/logstash.yml:/usr/share/logstash/config/logstash.yml
+      - ${LOGSTASH_PATH}pipeline:/usr/share/logstash/pipeline
     ports:
       - "5000:5000"
       - "9600:9600"
@@ -70,4 +56,3 @@ networks:
 
 volumes:
   elasticsearch:
-
