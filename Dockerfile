@@ -14,8 +14,10 @@ RUN groupadd --gid ${USER_ID} ${GROUP_ID} && \
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        file        \
-        gcc         \
+        file   \
+        cython \ 
+        build-essential \
+        python3-dev    \
         libwww-perl && \
     apt-get autoremove -y && \
     apt-get clean
@@ -25,7 +27,7 @@ RUN pip install --upgrade pip
 WORKDIR ${HOME}
 
 ADD requirements requirements/
-RUN pip install -r requirements/requirements.txt
+RUN pip install --user -r requirements/requirements.txt
 
 ADD . ${HOME}/${APP_NAME}
 ENV PATH $PATH:${HOME}/${APP_NAME}/bin

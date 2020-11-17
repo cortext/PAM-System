@@ -10,7 +10,7 @@ services:
     ports:
       - "3030:3030"
     environment:
-      - "ELASTIC_PASSWORD=${ENV_ELASTIC_PASSWORD}"
+      - "ELASTIC_PASSWORD=${ELASTIC_PASSWORD}"
     networks:
       - pam
 
@@ -20,14 +20,14 @@ services:
       args:
         ELK_VERSION: $ELK_VERSION
     volumes:
-      - ${ELASTIC_PATH}config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ${ELASTIC_PATH}/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
       - elasticsearch:/usr/share/elasticsearch/data
     ports:
       - "9200:9200"
       - "9300:9300"
     environment:
-      - "ES_JAVA_OPTS=-Xmx10g -Xms10g"
-      - "ELASTIC_PASSWORD=${ENV_ELASTIC_PASSWORD}"
+      - "ES_JAVA_OPTS=-Xmx12g -Xms12g"
+      - "ELASTIC_PASSWORD=${ELASTIC_PASSWORD}"
       - xpack.security.enabled=false
     networks:
       - pam
@@ -38,8 +38,8 @@ services:
       args:
         ELK_VERSION: $ELK_VERSION
     volumes:
-      - ${LOGSTASH_PATH}config/logstash.yml:/usr/share/logstash/config/logstash.yml
-      - ${LOGSTASH_PATH}pipeline:/usr/share/logstash/pipeline
+      - ${LOGSTASH_PATH}/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+      - ${LOGSTASH_PATH}/pipeline:/usr/share/logstash/pipeline
     ports:
       - "5000:5000"
       - "9600:9600"

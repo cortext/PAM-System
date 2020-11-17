@@ -10,11 +10,11 @@ RUN yum update -y
 
 RUN yum install -y java-1.8.0-openjdk
 
-COPY plugins/mysql-connector-java-5.1.44-bin.jar /usr/share/logstash/logstash-core/lib/jars
+COPY plugins/mysql-connector-java-5.1.49-bin.jar /usr/share/logstash/logstash-core/lib/jars
 
 RUN ls -al /usr/share/logstash/logstash-core/lib/jars
-RUN chown -R logstash:root /usr/share/logstash/logstash-core/lib/jars/mysql-connector-java-5.1.44-bin.jar 
-RUN chmod -R 664 /usr/share/logstash/logstash-core/lib/jars/mysql-connector-java-5.1.44-bin.jar 
+RUN chown -R logstash:root /usr/share/logstash/logstash-core/lib/jars/mysql-connector-java-5.1.49-bin.jar 
+RUN chmod -R 664 /usr/share/logstash/logstash-core/lib/jars/mysql-connector-java-5.1.49-bin.jar 
 
 # Add your logstash plugins setup here
 # Example: RUN logstash-plugin install logstash-filter-json

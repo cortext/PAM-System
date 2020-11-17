@@ -2,9 +2,10 @@ Click==7.0
 configparser==4.0.2
 elasticsearch==7.0.5
 fuzzywuzzy==0.17.0
-nltk==3.4.5
+cython
 numpy==1.17.3
 pandas==0.24.2
+nltk==3.4.5
 python-dateutil==2.8.1
 python-Levenshtein==0.12.0
 pytz==2019.3
