@@ -1,6 +1,21 @@
-version: '2.4'
+version: '3'
 
 services:
+  pam:
+    build:
+      context: .
+      dockerfile: Dockerfile    
+    volumes:
+      - type: bind
+        source: .data/
+        target: /app/data
+    ports:
+      - "3030:3030"
+    environment:
+      - "ELASTIC_PASSWORD=${ENV_ELASTIC_PASSWORD}"
+    networks:
+      - pam
+
   elasticsearch:
     build:
       context: elasticsearch/elastic/
@@ -19,11 +34,11 @@ services:
       - "9200:9200"
       - "9300:9300"
     environment:
-      - "ES_JAVA_OPTS=-Xmx12g -Xms12g"
-      - "ELASTIC_PASSWORD=changeme"
+      - "ES_JAVA_OPTS=-Xmx10g -Xms10g"
+      - "ELASTIC_PASSWORD=${ENV_ELASTIC_PASSWORD}"
       - xpack.security.enabled=false
     networks:
-      - elastic
+      - pam
 
   logstash:
     build:
@@ -45,12 +60,12 @@ services:
     environment:
       LS_JAVA_OPTS: "-Xmx8g -Xms8g"
     networks:
-      - elastic
+      - pam
     depends_on:
       - elasticsearch
 
 networks:
-  elastic:
+  pam:
     driver: bridge
 
 volumes:
