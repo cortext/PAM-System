@@ -3,13 +3,13 @@ version: '2.4'
 services:
   elasticsearch:
     build:
-      context: elasticsearch/
+      context: elasticsearch/elastic/
       args:
         ELK_VERSION: $ELK_VERSION
     mem_limit: 10G     
     volumes:
       - type: bind
-        source: ./elasticsearch/config/elasticsearch.yml
+        source: ./elasticsearch/elastic/config/elasticsearch.yml
         target: /usr/share/elasticsearch/config/elasticsearch.yml
         read_only: true
       - type: volume
@@ -27,16 +27,16 @@ services:
 
   logstash:
     build:
-      context: logstash/
+      context: elasticsearch/logstash/
       args:
         ELK_VERSION: $ELK_VERSION
     volumes:
       - type: bind
-        source: ./logstash/config/logstash.yml
+        source: .elasticsearch/logstash/config/logstash.yml
         target: /usr/share/logstash/config/logstash.yml
         read_only: true
       - type: bind
-        source: ./logstash/pipeline
+        source: .elasticsearch/logstash/pipeline
         target: /usr/share/logstash/pipeline
         read_only: true
     ports:
