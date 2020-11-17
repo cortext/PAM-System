@@ -36,4 +36,3 @@ RUN chown -R ${USER_ID}:${GROUP_ID} ${HOME}
 USER ${USER_ID}
 
 ENTRYPOINT ["entrypoint"]
-
