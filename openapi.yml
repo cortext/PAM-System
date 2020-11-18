@@ -10,7 +10,7 @@ info:
     url: https://opensource.org/licenses/MIT
 tags:
   - name: entities
-    description: Operation related to entities
+    description: Operations related to entities
   - name: user
     description: Operations about user
 servers:
@@ -47,33 +47,33 @@ paths:
     get:
       tags:
         - entities
-      summary: Link and external entity by status
-      description: Multiple status values can be provided with comma separated strings
+      summary: Link an external entity with risis datasets using its name
+      description: This is the principal operation of PAM where it does the allocation of entities using their names and other filters.
       operationId: entityLinkage
       parameters:
         - name: name
           in: query
-          description: Name value that need to be considered for filter
+          description: Name value that need to be considered for the entity linkage
           required: true
+          schema:
+            type: string
+        - name: verbose 
+          in: query
+          description: It provides additional information such as the scores caculated during the process
+          required: false
           explode: true
           schema:
             type: array
             items:
               type: string
               enum:
-                - available
-                - pending
-                - sold
-              default: available
+                - true
+                - false
+              default: false
       responses:
         "200":
           description: successful operation
           content:
-            application/xml:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Entities"
             application/json:
               schema:
                 type: array
@@ -101,9 +101,6 @@ paths:
         "200":
           description: successful operation
           content:
-            application/xml:
-              schema:
-                $ref: "#/components/schemas/Entities"
             application/json:
               schema:
                 $ref: "#/components/schemas/Entities"
@@ -114,7 +111,7 @@ paths:
     delete:
       tags:
         - entities
-      summary: Deletes an entity
+      summary: Delete an entity
       description: ""
       operationId: deleteEntity
       parameters:
@@ -187,9 +184,6 @@ paths:
                 type: string
                 format: date-time
           content:
-            application/xml:
-              schema:
-                type: string
             application/json:
               schema:
                 type: string
@@ -223,9 +217,6 @@ paths:
         "200":
           description: successful operation
           content:
-            application/xml:
-              schema:
-                $ref: "#/components/schemas/User"
             application/json:
               schema:
                 $ref: "#/components/schemas/User"
@@ -325,8 +316,6 @@ components:
           format: int64
         name:
           type: string
-      xml:
-        name: Datasets
     Entities:
       type: object
       required:
