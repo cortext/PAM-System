@@ -65,7 +65,7 @@ paths:
           schema:
             type: array
             items:
-              type: string
+              type: boolean
               enum:
                 - true
                 - false
@@ -316,15 +316,17 @@ components:
           format: int64
         name:
           type: string
+    
     Entities:
       type: object
       required:
-        - name
         - id
+        - name
       properties:
         id:
           type: string
-          length: 10
+          maxLength: 10
+          minLength: 10
           pattern: '^\s{2}_\d{8}$'
         name:
           type: string
@@ -337,13 +339,3 @@ components:
           type: string
           description: Iso country of the entity
           example: FR
-    ApiResponse:
-      type: object
-      properties:
-        code:
-          type: integer
-          format: int32
-        type:
-          type: string
-        message:
-          type: string
