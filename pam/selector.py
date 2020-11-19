@@ -1,5 +1,5 @@
 import pandas as pd
-
+import math
 
 class PamSelector():
 
@@ -72,12 +72,17 @@ class PamSelector():
 
         accurate_matches = accurate_matches.append(
                 base_matches[(base_matches['pam_score'] >
-                             accurate_matches_query['score_patent_condition'])
+                    accurate_matches_query['score_patent_condition'])
                              & (base_matches['pam_score'] <
                                  accurate_matches_query['min_score'])
                              & (base_matches['number_patents'] <
                                  accurate_matches_query['number_patents'])
                              ])
+
+        accurate_matches = accurate_matches.append(df_pam[
+            (df_pam['levensthein_score'] >= 65) &
+            (df_pam['jaro_winkler_score'] >= 0.89)
+            ])
 
         accurate_matches = self.query_by_parameterization(
                 accurate_matches, levensthein_score=70,
@@ -85,7 +90,7 @@ class PamSelector():
 
         accurate_matches = self.query_by_parameterization(
                 accurate_matches, elastic_score=11,
-                jaro_w_score=0.9, pam_score=68)
+                jaro_w_score=0.89, pam_score=68)
 
         accurate_matches = self.query_by_parameterization(
                 accurate_matches, jaro_w_score=0.85,
@@ -93,34 +98,22 @@ class PamSelector():
 
         accurate_matches = self.query_by_parameterization(
                 accurate_matches, elastic_score=19,
-                jaro_w_score=0.85, ratcliff_score=0.78)
+                jaro_w_score=0.85, ratcliff_score=0.78, 
+                pam_score=78)
 
         accurate_matches = self.query_by_parameterization(
                 accurate_matches, elastic_score=14.3, levensthein_score=71,
                 ratcliff_score=0.85, n_patents=100)
 
-        accurate_matches = self.query_by_parameterization(
-                accurate_matches, jaro_w_score=0.85,
-                pam_score=71)
-
-        """
-        accurate_matches = self.query_by_parameterization(
-                df_pam, levensthein_score=65, jaro_w_score=0.89
-            )
-        """
-
-        accurate_matches = accurate_matches.append(df_pam[
-            (df_pam['levensthein_score'] >= 65) &
-            (df_pam['jaro_winkler_score'] >= 0.89)
-            ])
-
         accurate_matches = accurate_matches[
-                (accurate_matches['pam_score'] >= 73) |
+                (accurate_matches['pam_score'] >= 72) |
                 (accurate_matches['elastic_score'] >= 13) |
                 (accurate_matches['jaro_winkler_score'] >= 0.93) |
-                (accurate_matches['orbis_name'].str.split().str.len().lt(2))
+                (accurate_matches['levensthein_score'] >= 77) |
+                (accurate_matches['orbis_name'].str.split().str.len().lt(2)) |
+                (len(accurate_matches['orbis_name']) < 13)
                 ]
-
+        
         self.df_accurate_matches = accurate_matches
 
     def selector_wrong_matches(self):
@@ -187,9 +180,10 @@ class PamSelector():
         return True
 
     def query_by_parameterization(
-            self, pam_type_df, elastic_score=0, levensthein_score=0,
-            jaro_w_score=0, ratcliff_score=0, pam_score=0, n_patents=0,
-            company_max_name_len=1000000):
+            self, pam_type_df, elastic_score=math.inf,
+            levensthein_score=math.inf, jaro_w_score=math.inf,
+            ratcliff_score=math.inf, pam_score=math.inf, n_patents=math.inf,
+            company_max_name_len=0):
         """
         selector_matches_to_check
         """

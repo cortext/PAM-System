@@ -64,9 +64,10 @@ class SearchEngine():
             res = self.connection.search(index="cib_patstat_applicants2",
                                          body=query)
         except elasticsearch.ElasticsearchException as es1:
+            print("Company name: ", self.company_name) 
             print("Error:", es1)
             match_data.append(["", "", self.company_id,
-                               self.company_name, self.name_type, ""])
+                               self.company_name, self.name_type, 0, 0])
             return match_data
 
         for doc in res['hits']['hits']:
@@ -85,14 +86,16 @@ class SearchEngine():
 
         if self.query == 'restricted_to_jurisdiction':
             query = {
-                "size": 300,
+                "size": 3,
                 "min_score": 10,
                 "query": {
                     "bool": {
                         "must":
                         {
                             "match": {
-                                "doc_std_name": self.company_name
+                                "doc_std_name": {
+                                    "query": self.company_name
+                                }
                             }
                         },
                         "filter": {
@@ -105,14 +108,16 @@ class SearchEngine():
             }
         elif self.query == 'out_jurisdiction':
             query = {
-                "size": 300,
+                "size": 3,
                 "min_score": 10,
                 "query": {
                     "bool": {
                         "must":
-                        {
+                        { 
                             "match": {
-                                "doc_std_name": self.company_name
+                                "doc_std_name": {
+                                    "query": self.company_name 
+                                }
                             }
                         },
                         "must_not": {
