@@ -4,5 +4,9 @@
 __pycache__
 .deps
 .libs
+*.egg-info
 /_build/
 pam-env/
+pam_env/
+dist/
+build/

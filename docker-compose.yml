@@ -1,0 +1,58 @@
+version: '3'
+
+services:
+  pam:
+    build:
+      context: .
+      dockerfile: Dockerfile    
+    volumes:
+      - .data/:/app/data
+    ports:
+      - "3030:3030"
+    environment:
+      - "ELASTIC_PASSWORD=${ELASTIC_PASSWORD}"
+    networks:
+      - pam
+
+  elasticsearch:
+    build:
+      context: elasticsearch/elastic/
+      args:
+        ELK_VERSION: $ELK_VERSION
+    volumes:
+      - ${ELASTIC_PATH}/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - elasticsearch:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      - "ES_JAVA_OPTS=-Xmx12g -Xms12g"
+      - "ELASTIC_PASSWORD=${ELASTIC_PASSWORD}"
+      - xpack.security.enabled=false
+    networks:
+      - pam
+
+  logstash:
+    build:
+      context: elasticsearch/logstash/
+      args:
+        ELK_VERSION: $ELK_VERSION
+    volumes:
+      - ${LOGSTASH_PATH}/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+      - ${LOGSTASH_PATH}/pipeline:/usr/share/logstash/pipeline
+    ports:
+      - "5000:5000"
+      - "9600:9600"
+    environment:
+      LS_JAVA_OPTS: "-Xmx8g -Xms8g"
+    networks:
+      - pam
+    depends_on:
+      - elasticsearch
+
+networks:
+  pam:
+    driver: bridge
+
+volumes:
+  elasticsearch:

@@ -31,6 +31,8 @@ def pam_score(query, elastic_score, distance_score, name_length):
     """
     pam_score
     """
+    new_elastic_score = 0
+
     if elastic_score < elastic_score_scale['low']['range']:
         new_elastic_score = elastic_score_scale['low']['value']
     elif elastic_score < elastic_score_scale['medium-low']['range']:

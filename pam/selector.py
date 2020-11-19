@@ -1,6 +1,7 @@
 import pandas as pd
 import math
 
+
 class PamSelector():
 
     base_matches_query = {
@@ -49,7 +50,8 @@ class PamSelector():
 
         base_matches = base_matches.append(
                 base_matches[(base_matches['pam_score'] >= 73) |
-                             (base_matches['number_patents'] >= 10) |
+                             (base_matches['number_patents'].astype(int)
+                                 >= 10) |
                              (base_matches['elastic_score'] >= 13) |
                              (base_matches['jaro_winkler_score'] >= 0.92) |
                              (base_matches['orbis_name'].str.split(
@@ -75,7 +77,7 @@ class PamSelector():
                     accurate_matches_query['score_patent_condition'])
                              & (base_matches['pam_score'] <
                                  accurate_matches_query['min_score'])
-                             & (base_matches['number_patents'] <
+                             & (base_matches['number_patents'].astype(int) <
                                  accurate_matches_query['number_patents'])
                              ])
 
@@ -167,7 +169,7 @@ class PamSelector():
             ]
 
         not_found_many_patents = companies_not_found[
-                companies_not_found['number_patents'] > 10]
+                companies_not_found['number_patents'].astype(int) > 10]
 
         companies_not_found = not_found_many_patents.append(
             companies_not_found[~companies_not_found.orbis_id.isin(
@@ -197,7 +199,7 @@ class PamSelector():
                 (df['jaro_winkler_score'] >= jaro_w_score) |
                 (df['ratcliff_obershelp_score'] >= ratcliff_score) |
                 (df['pam_score'] >= pam_score) |
-                (df['number_patents'] >= n_patents) |
+                (df['number_patents'].astype(int) >= n_patents) |
                 (df['orbis_name'].str.split().str.len().lt(
                     company_max_name_len)
                  )

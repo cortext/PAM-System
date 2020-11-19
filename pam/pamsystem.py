@@ -89,8 +89,8 @@ class PamSystem():
 
         print("Total companies not found ", not_found)
         print("Total candidates for matching ", total_found)
-        print("Total number of patents ",
-              self.df_elastic['number_patents'].sum())
+        # print("Total number of patents ",
+        #     self.df_elastic['number_patents'].sum())
 
     def distance_matching_proccesor(self):
         """
@@ -143,5 +143,5 @@ class PamSystem():
         self.df_to_check_matches = selector.df_to_check_matches
 
     def set_df_companies(self, csv):
-        self.df_companies = pd.read_csv(csv)
-        # self.df_companies = pd.read_csv(csv, encoding='ISO-8859-1')
+        # self.df_companies = pd.read_csv(csv)
+        self.df_companies = pd.read_csv(csv, encoding='UTF-8')

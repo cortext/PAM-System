@@ -1,0 +1,25 @@
+input {
+  jdbc {
+        jdbc_driver_library => "/usr/share/logstash/logstash-core/lib/jars/mysql-connector-java-5.1.49-bin.jar"
+        jdbc_driver_class => "com.mysql.jdbc.Driver"
+        jdbc_connection_string => "jdbc:mysql://${ENV_MYSQL_HOST}:3306/${ENV_DB_NAME}"
+        # The user we wish to execute our statement as
+        jdbc_user => ${ENV_DB_USER}
+        jdbc_password => ${ENV_DB_PASSWORD} 
+                statement => "SELECT firmreg_id, firmreg_name, iso_ctry FROM risis_entities;"
+        }
+   tcp {
+        port => 5000
+       }
+}
+
+## Add your filters / logstash plugins configuration here
+output {
+        elasticsearch {
+                hosts => "elasticsearch:9200"
+                user => ${ENV_ELASTIC_USER}
+                password => ${ENV_ELASTIC_PASSWORD}
+                index => ${ENV_INDEX_NAME}
+        }
+}
+
