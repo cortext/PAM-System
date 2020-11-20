@@ -57,6 +57,12 @@ paths:
           required: true
           schema:
             type: string
+        - name: country 
+          in: query
+          description: Filter by country (Iso country)
+          schema:
+            type: string
+          required: false 
         - name: verbose 
           in: query
           description: It provides additional information such as the scores caculated during the process
@@ -78,7 +84,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Entities"
+                  $ref: "#/components/schemas/EntityLinkageReponse"
         "400":
           description: Invalid status value
  
@@ -314,14 +320,15 @@ components:
         id:
           type: integer
           format: int64
+          example: 4566000
         name:
           type: string
-    
+          example: CIB
     Entities:
       type: object
       required:
-        - id
         - name
+        - id
       properties:
         id:
           type: string
@@ -339,3 +346,27 @@ components:
           type: string
           description: Iso country of the entity
           example: FR
+    EntityLinkageReponse:
+      type: object
+      properties:
+        id:
+          type: string
+          maxLength: 10
+          minLength: 10
+          pattern: '^\s{2}_\d{8}$'
+          example: F_US000736
+        name:
+          type: string
+          example: Samsung Electronics
+        datasets:
+          type: array
+          items:
+            $ref: "#/components/schemas/Datasets"
+        country:
+          type: string
+          description: Iso country of the entity
+          example: FR
+        _score:
+          type: boolean
+          description: The pam score
+          example: 89.56
