@@ -1,4 +1,4 @@
-FROM python:3
+FROM python:3.7
 MAINTAINER Juan Pablo <gnupablo@portonmail.com>
 
 ARG APP_NAME=pam
@@ -38,3 +38,4 @@ RUN chown -R ${USER_ID}:${GROUP_ID} ${HOME}
 USER ${USER_ID}
 
 ENTRYPOINT ["entrypoint"]
+CMD ["uvicorn", "pam.main:app", "--host", "0.0.0.0", "--port", "8000"]
