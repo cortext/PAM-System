@@ -6,7 +6,7 @@ input {
         # The user we wish to execute our statement as
         jdbc_user => ${ENV_DB_USER}
         jdbc_password => ${ENV_DB_PASSWORD} 
-                statement => "SELECT firmreg_id, firmreg_name, iso_ctry FROM risis_entities;"
+                statement => "SELECT entity_id, entity_name, country, total_patents, dataset_id, dataset FROM pam_entities;"
         }
    tcp {
         port => 5000

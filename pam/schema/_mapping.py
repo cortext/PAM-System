@@ -62,6 +62,9 @@ entities = {
                     }
                 }
             },
+            "total_patents": {
+                "type": "integer"
+            },
             "dataset_id": {
                 "type": "integer"
             },
