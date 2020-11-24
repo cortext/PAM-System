@@ -46,7 +46,7 @@ services:
       - "5000:5000"
       - "9600:9600"
     environment:
-      LS_JAVA_OPTS: "-Xmx8g -Xms8g"
+      - "LS_JAVA_OPTS=-Xmx8g -Xms8g"
       - "ELASTIC_PASSWORD=${ELASTIC_PASSWORD}"
       - "ELASTIC_USER=${ELASTIC_USER}"
       - "ENV_DB_NAME=${ENV_DB_NAME}"
