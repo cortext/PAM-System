@@ -13,6 +13,8 @@ services:
       - "ELASTIC_PASSWORD=${ELASTIC_PASSWORD}"
     networks:
       - pam
+    depends_on:
+      - elasticsearch
 
   elasticsearch:
     build:
