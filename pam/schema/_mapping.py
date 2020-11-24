@@ -5,7 +5,6 @@ entities = {
     "settings": {
         "number_of_shards": 5,
         "number_of_replicas": 1,
-        "provided_name": "entities",
         "analysis": {
             "filter": {
                 "stemmer": {
@@ -49,11 +48,12 @@ entities = {
             },
             "entity_name": {
                 "type": "text",
-                "analyzer": "pamAnalyzer"
+                "analyzer": "pamAnalyzer",
+                "search_analyzer": "pamAnalyzer"
             },
             "country": {
                 "type": "text",
-                "index": "not_analyzed",
+                "analyzer": "keyword",
                 "search_analyzer": "keyword",
                 "fields": {
                     "keyword": {
