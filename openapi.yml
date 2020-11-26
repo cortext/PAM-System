@@ -138,7 +138,7 @@ paths:
           description: Invalid ID supplied
         "404":
           description: Entity not found
-  /user:
+  /users:
     post:
       tags:
         - user
@@ -149,13 +149,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/User"
+              $ref: "#/components/schemas/Users"
         description: Created user object
         required: true
       responses:
         default:
           description: successful operation
-  /user/login:
+  /users/login:
     get:
       tags:
         - user
@@ -195,7 +195,7 @@ paths:
                 type: string
         "400":
           description: Invalid username/password supplied
-  /user/logout:
+  /users/logout:
     get:
       tags:
         - user
@@ -205,7 +205,7 @@ paths:
       responses:
         default:
           description: successful operation
-  "/user/{username}":
+  "/users/{username}":
     get:
       tags:
         - user
@@ -225,7 +225,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
+                $ref: "#/components/schemas/Users"
         "400":
           description: Invalid username supplied
         "404":
@@ -247,7 +247,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/User"
+              $ref: "#/components/schemas/Users"
         description: Updated user object
         required: true
       responses:
@@ -281,7 +281,7 @@ components:
           schema:
             type: array
             items:
-              $ref: "#/components/schemas/User"
+              $ref: "#/components/schemas/Users"
       description: List of user object
       required: true
     Entities:
@@ -292,7 +292,7 @@ components:
       description: Entity object that needs to be added to the store
       required: true
   schemas:
-    User:
+    Users:
       type: object
       properties:
         id:
@@ -370,3 +370,4 @@ components:
           type: boolean
           description: The pam score
           example: 89.56
+
